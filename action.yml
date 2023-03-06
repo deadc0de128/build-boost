@@ -20,6 +20,12 @@ inputs:
     description: Configuration to build
     required: false
     default: Release
+  stdlib:
+    description: Specifies C++ standard library to link to
+    required: false
+  layout:
+    description: Chooses library names and header locations
+    required: false
   static:
     description: Build static libraries
     required: false
@@ -102,6 +108,16 @@ runs:
             $boost_dir = Join-Path $base_dir boost
         }
 
+        $stdlib = '${{ inputs.stdlib }}'
+        if ($stdlib) {
+            $stdlib = 'stdlib=${{ inputs.stdlib }}'
+        }
+
+        $layout = '${{ inputs.layout }}'
+        if ($layout) {
+            $layout = '--layout=${{ inputs.layout }}'
+        }
+
         $libraries = '${{ inputs.libraries }}'
         $libraries = $libraries.Split(' ', [System.StringSplitOptions]::RemoveEmptyEntries)
 
@@ -138,7 +154,9 @@ runs:
             --runtime-link $runtime_link `
             -- `
             $boost_dir `
-            $libraries
+            $libraries `
+            $stdlib `
+            $layout
 
         $platformdir = $platform
         if ($platformdir -eq 'auto' -and $windows_host) {
