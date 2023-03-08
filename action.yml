@@ -23,6 +23,9 @@ inputs:
   stdlib:
     description: Specifies C++ standard library to link to
     required: false
+  cxxstd:
+    description: Specifies the version of the C++ Standard to build with
+    required: false
   layout:
     description: Chooses library names and header locations
     required: false
@@ -112,6 +115,11 @@ runs:
         if ($stdlib) {
             $stdlib = 'stdlib=${{ inputs.stdlib }}'
         }
+        
+        $cxxstd = '${{ inputs.cxxstd }}'
+        if ($cxxstd) {
+            $cxxstd = 'cxxstd=${{ inputs.cxxstd }}'
+        }        
 
         $layout = '${{ inputs.layout }}'
         if ($layout) {
@@ -156,6 +164,7 @@ runs:
             $boost_dir `
             $libraries `
             $stdlib `
+            $cxxstd `
             $layout
 
         $platformdir = $platform
